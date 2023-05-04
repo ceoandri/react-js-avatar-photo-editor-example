@@ -10,7 +10,10 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scaleOriginal, setScaleOriginal] = useState();
   const [selectedFile, setSelectedFile] = useState();
+  const [avatarFile, setAvatarFile] = useState();
+  const [loading, setLoading] = useState(false);
   const [scale, setScale] = useState();
+  const [position, setPosition] = useState({x:0,y:0});
   const [prev, setPrev] = useState(true);
   const [next, setNext] = useState(false);
   const editor = useRef(null);
@@ -38,15 +41,15 @@ const App = () => {
   }, [scale]);
   
   const handleOk = async () => {
+    setLoading(true);
     const dataUrl = editor.current.getImage().toDataURL();
     const result = await fetch(dataUrl);
     const blob = await result.blob();
     setScaleOriginal(scale);
-    // console.log(blob);
-    // console.log(editor.current.getCroppingRect());
-    // console.log(dataUrl);
+    setAvatarFile(blob);
     setImageUrl(dataUrl);
     setIsModalOpen(false);
+    setLoading(false);
   };
 
   const handleCancel = () => {
@@ -54,28 +57,32 @@ const App = () => {
   };
 
   const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const triggerUpload = () => {
     document.getElementById("upload-icon").click();
-    // setIsModalOpen(true);
   };
 
   const minusScale = () => {
     setScale(scale - 0.1);
-  }
+  };
 
   const plusScale = () => {
     setScale(scale + 0.1);
-  }
+  };
 
   const onFileChange = event => {
-    setSelectedFile(event.target.files[0]);
-
-    const reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    reader.addEventListener('load', () => {
-      console.log(reader.result);
-      setImageOriginal(reader.result);
-      setIsModalOpen(true);
-    });
+    if (event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+      setScale(1);
+      const reader = new FileReader();
+      reader.readAsDataURL(event.target.files[0]);
+      reader.addEventListener('load', () => {
+        setImageOriginal(reader.result);
+        setIsModalOpen(true);
+      });
+    }
   };
 
   return (
@@ -90,7 +97,20 @@ const App = () => {
         <Button className='edit-profile-btn' shape="circle" icon={<CameraOutlined />} onClick={openModal}/>
       </span>
 
-      <Modal title="Change Profile Picture" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+      <Modal 
+        title="Change Profile Picture" 
+        open={isModalOpen} 
+        onOk={handleOk} 
+        onCancel={handleCancel}
+        footer={[
+          <Button onClick={triggerUpload} className="upload-image-btn">Upload Image</Button>,
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+            Save
+          </Button>,
+        ]}>
         <div className="photo-editor">
           <AvatarEditor
             ref={editor}
@@ -100,6 +120,8 @@ const App = () => {
             borderRadius={125}
             border={[135, 30]}
             color={[30, 30, 30, 0.8]}
+            position={position}
+            onPositionChange={setPosition}
             scale={scale}
             rotate={0}
             backgroundColor="white" />
@@ -132,7 +154,6 @@ const App = () => {
           </div>
         </div>
       </Modal>
-      
     </div>
   );
 }

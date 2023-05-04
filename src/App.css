@@ -46,3 +46,7 @@
 #upload-icon {
   display: none;
 }
+
+.upload-image-btn {
+  float: left;
+}
