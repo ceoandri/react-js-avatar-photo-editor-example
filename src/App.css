@@ -42,3 +42,7 @@
 .slider-track {
   flex-grow: 8;
 }
+
+#upload-icon {
+  display: none;
+}
