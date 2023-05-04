@@ -39,6 +39,15 @@ const App = () => {
       setNext(true);
     }
   }, [scale]);
+
+  const sendDataToDB = async () => {
+    const data = {
+      originalFile : selectedFile,
+      avatarFile : avatarFile,
+      position : position,
+      scale : scale
+    }
+  };
   
   const handleOk = async () => {
     setLoading(true);
@@ -49,6 +58,7 @@ const App = () => {
     setAvatarFile(blob);
     setImageUrl(dataUrl);
     setIsModalOpen(false);
+    await sendDataToDB();
     setLoading(false);
   };
 
