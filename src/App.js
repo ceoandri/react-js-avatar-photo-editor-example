@@ -52,8 +52,8 @@ const App = () => {
     const data = {
       originalFile : selectedFile,
       avatarFile : avatarFile,
-      position : position,
-      scale : scale
+      position : positionOriginal,
+      scale : scaleOriginal
     }
 
     console.log(data);
