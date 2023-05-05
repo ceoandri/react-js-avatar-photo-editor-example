@@ -47,6 +47,8 @@ const App = () => {
       position : position,
       scale : scale
     }
+
+    console.log(data);
   };
   
   const handleOk = async () => {
