@@ -29,7 +29,6 @@ const App = () => {
   }, [scaleOriginal]);
 
   useEffect(() => {
-    setImageUrl(imageOriginal);
     setPrev(false);
     setNext(false);
     if (scale <= 1) {
